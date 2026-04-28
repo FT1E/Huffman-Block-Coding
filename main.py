@@ -16,5 +16,5 @@ def generate_random_word(length):
     
     word = ""
     for i in range(length // 2):
-        word += random.choices(alphabet, weights=[node.probability for node in alphabet])[0].symbol
+        word += random.choices(alphabet, weights=[node.probability for node in alphabet])[0].symbol    
     return word

@@ -64,3 +64,5 @@ HuffmanTree.assign_encodings()
 Leaves = {}
 for a in alphabet:
     Leaves[a.symbol] = a.encoding
+
+print(Leaves)
