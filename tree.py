@@ -61,4 +61,6 @@ for i in range(6):
 
 HuffmanTree = make_tree(alphabet)
 HuffmanTree.assign_encodings()
-Leaves = alphabet
+Leaves = {}
+for a in alphabet:
+    Leaves[a.symbol] = a.encoding
