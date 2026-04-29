@@ -8,6 +8,7 @@ code = ""
 block_len = 2
 block_store = []
 block_count = 0
+coded_seq = ""
 
 #Getting the entire seq
 seq = generate_random_word(word_len)
@@ -32,6 +33,8 @@ def iterate_seq(my_seq):
     print(block_store)
     return code       
 
-print(seq)
-print(iterate_seq(seq))
-
+#Seq of the alphabet
+#print(seq)
+#coded seq
+coded_seq = iterate_seq(seq)
+#print(coded_seq)
