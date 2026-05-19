@@ -37,7 +37,7 @@ class Heap:
                 self.heap.pop()
                 break
             else:
-                if self.heap[left].probability <= self.heap[right].probability:
+                if self.heap[left].probability < self.heap[right].probability:
                     self.heap[current], self.heap[left] = self.heap[left], self.heap[current]
                     current = left
                 else:
