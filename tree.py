@@ -65,4 +65,4 @@ Leaves = {}
 for a in alphabet:
     Leaves[a.symbol] = a.encoding
 
-print(Leaves)
+# print(Leaves)

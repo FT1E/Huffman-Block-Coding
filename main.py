@@ -1,6 +1,9 @@
 from tree import Node
 import random
 
+from encoding import encode_seq
+from decoding import decode_seq
+
 SYMBOLS = ['a', 'b', 'c', 'd', 'e', 'f']
 PROBABILITIES = [0.05, 0.1, 0.15, 0.18, 0.22, 0.3]
 
@@ -18,3 +21,15 @@ def generate_random_word(length):
     for i in range(length // 2):
         word += random.choices(alphabet, weights=[node.probability for node in alphabet])[0].symbol    
     return word
+
+
+
+# seq = generate_random_word(20)
+# encoded = encode_seq(seq)
+# decoded = decode_seq(encoded)
+
+# print(f"Original Sequence:\t {seq}")
+# print(f"Encoding of sequence:\t {encoded}")
+# print(f"Decoding of encoding:\t {decoded}")
+
+# print(f"Decoding of encoding == original: {seq == decoded}")
