@@ -60,8 +60,10 @@ compression_ratio = non_compressed_expected_length / huffman_expected_length
 # compression ratio if probabilities are flipped for 'a' and 'f'
 alt_compression_ratio = non_compressed_expected_length / flipped_expected_length
 
-print(f"Compression ratio with original probabilities:\t{compression_ratio}")
-print(f"Compression ratio with flipped probabilities:\t{alt_compression_ratio}")
+# print(f"Compression ratio with original probabilities:\t{compression_ratio}")
+# print(f"Compression ratio with flipped probabilities:\t{alt_compression_ratio}")
+
+
 
 
 
