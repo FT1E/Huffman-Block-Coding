@@ -1,9 +1,6 @@
-from tree import Node, Leaves
+from tree import *
 import random
 import math
-
-from encoding import encode_seq
-from decoding import decode_seq
 
 SYMBOLS = ['a', 'b', 'c', 'd', 'e', 'f']
 PROBABILITIES = [0.05, 0.1, 0.15, 0.18, 0.22, 0.3]
@@ -14,19 +11,8 @@ for i in range(6):
         alphabet.append(Node(symbol=SYMBOLS[i] + SYMBOLS[j], probability=PROBABILITIES[i] * PROBABILITIES[j]))
 
 
-non_compressed_code = {}
-non_compressed_code_length = math.ceil(math.log2(len(alphabet)))
-bits = [0 for _ in range(non_compressed_code_length)]
-for node in alphabet:
-    
-    non_compressed_code[node.symbol] = "".join([str(x) for x in bits])
-    for i in range(non_compressed_code_length-1,0, -1):
-        bits[i] = (bits[i] + 1) % 2
-        if bits[i] == 1:
-            break   # * no carry, so stop
-    
-# print(non_compressed_code)
 
+# generates a random word using the given probabilites
 def generate_random_word(length):
     if(length % 2 != 0):
         length += 1
@@ -37,35 +23,55 @@ def generate_random_word(length):
     return word
 
 
-expected_code_length = 0
-for node in alphabet:
-    expected_code_length += node.probability * len(Leaves[node.symbol])
-    # print(f"Probability: {round(node.probability, 4)}\t\t Encoding length: {len(Leaves[node.symbol])} \t\t Symbol: {node.symbol} \t\t Encoding: {Leaves[node.symbol]}")
+def calculate_expected_length(probabilities, lenghts):
+    res = 0    
+    for i in range(len(probabilities)):
+        res += probabilities[i] * lenghts[i]
+    return res
 
-print(f"Expected code length: {expected_code_length}")
-non_compressed_expected_codelength = non_compressed_code_length
-print(f"Non-compressed: {non_compressed_expected_codelength}")
 
+huffman_tree = make_tree(alphabet)
+
+
+non_compressed_expected_length = math.ceil(math.log2(len(alphabet)))
+huffman_expected_length = calculate_expected_length([x.probability for x in alphabet], [len(x.encoding) for x in alphabet])
+
+# expected length with flipped probabilites
+ALT_PROBABILITIES = list(PROBABILITIES)     # get a copy - so original isn't modified
+
+# swap probabilities
+ALT_PROBABILITIES[0], ALT_PROBABILITIES[5] = ALT_PROBABILITIES[5], ALT_PROBABILITIES[0]
+print(ALT_PROBABILITIES)
 alt_alphabet = []
-print(PROBABILITIES)
-PROBABILITIES[0], PROBABILITIES[5] = PROBABILITIES[5], PROBABILITIES[0]
-print(PROBABILITIES)
-for i in range(6):
-    for j in range(6):
-        alt_alphabet.append(Node(symbol=SYMBOLS[i] + SYMBOLS[j], probability=PROBABILITIES[i] * PROBABILITIES[j]))
+for i in range(len(SYMBOLS)):
+    for j in range(len(SYMBOLS)):
+        alt_alphabet.append(Node(symbol=SYMBOLS[i] + SYMBOLS[j], probability=ALT_PROBABILITIES[i] * ALT_PROBABILITIES[j]))
 
-alt_expected_code_length = 0
-for node in alt_alphabet:
-    alt_expected_code_length += node.probability * len(Leaves[node.symbol]) 
 
-print(f"Expected length assuming the input has flipped probabilities: {alt_expected_code_length}")
+flipped_expected_length = calculate_expected_length([x.probability for x in alt_alphabet], [len(x.encoding) for x in alphabet])
 
-# seq = generate_random_word(20)
-# encoded = encode_seq(seq)
-# decoded = decode_seq(encoded)
+# print(f"Non-compressed expected codeword length: {non_compressed_expected_length}")
+# print(f"Compressed with Huffman expected codeword length: {huffman_expected_length}")
+# print(f"With flipped probabilities: {flipped_expected_length}")
+
+
+compression_ratio = non_compressed_expected_length / huffman_expected_length
+
+# compression ratio if probabilities are flipped for 'a' and 'f'
+alt_compression_ratio = non_compressed_expected_length / flipped_expected_length
+
+print(f"Compression ratio with original probabilities:\t{compression_ratio}")
+print(f"Compression ratio with flipped probabilities:\t{alt_compression_ratio}")
+
+
+
+# You can uncomment below for generating a random word with original probabilities, encode it, decode the encoding
+
+# seq = generate_random_word(1000)        # replace 1000 with any positive number
+# encoded = huffman_tree.encode(seq)
+# decoded = huffman_tree.decode(encoded)
 
 # print(f"Original Sequence:\t {seq}")
 # print(f"Encoding of sequence:\t {encoded}")
 # print(f"Decoding of encoding:\t {decoded}")
-
 # print(f"Decoding of encoding == original: {seq == decoded}")

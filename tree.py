@@ -1,7 +1,7 @@
 
-# todo - making the huffman tree (using heap - bcs it's easier)
-# todo - encoding function - dictionary with direct access to leaves
-# todo - decoding function - traversing from the root of the tree to a leaf and then repeat until all symbols are consumed
+# * making the huffman tree (using heap - bcs it's easier)
+# * encoding function - dictionary with direct access to encodings
+# * decoding function - traversing from the root of the tree to a leaf and then repeat until all symbols are read
 
 from heap import Heap
 
@@ -18,6 +18,7 @@ class Node:
 class Tree:
     def __init__(self, root=None):
         self.root = root
+        self.encoding = dict()          # for getting the encoding of a symbol directly
 
     # traverse the tree and assign encodings to the leaves
     def assign_encodings(self, node=None, encoding=""):
@@ -25,13 +26,48 @@ class Tree:
             node = self.root
 
         if node.symbol is not None:
+            self.encoding[node.symbol] = encoding
             node.encoding = encoding
             return
         
         self.assign_encodings(node.left, encoding + "0")
         self.assign_encodings(node.right, encoding + "1")
 
+    # encode a sequence using this huffman tree
+    def encode(self, seq):
+        block_len = 2       # how many letters to take at a time
+        block_count = 0     # how many letters are there currently collected in the block
+        block = ""          # values in the block
+        code = ""           # encoded version of seq
+        for letter in seq:
+            if (block_count < block_len):    
+                block_count += 1 
+                block += letter
+            elif(block_count == block_len):
+                block_count = 1 
+                code += self.encoding[block]
+                block = letter   
+                
+        code += self.encoding[block]
+        return code       
+    
+    
+    # not implementing error handling if sequence contains something other than 1 or 0
+    def decode(self, encoded_seq):
+        current = self.root
+        decoded_seq = ""
+        
+        for bit in encoded_seq:
+            if bit == '0':
+                current = current.left
+            elif bit == '1':
+                current = current.right
 
+            if current.symbol is not None:
+                decoded_seq += current.symbol
+                current = self.root
+
+        return decoded_seq
 
 def make_tree(nodes):
     heap = Heap()
@@ -48,20 +84,3 @@ def make_tree(nodes):
     tree = Tree(root=heap.extract_min())
     tree.assign_encodings()
     return tree
-
-
-SYMBOLS = ['a', 'b', 'c', 'd', 'e', 'f']
-PROBABILITIES = [0.05, 0.1, 0.15, 0.18, 0.22, 0.3]
-
-alphabet = []
-for i in range(6):
-    for j in range(6):
-        alphabet.append(Node(symbol=SYMBOLS[i] + SYMBOLS[j], probability=PROBABILITIES[i] * PROBABILITIES[j]))
-
-
-HuffmanTree = make_tree(alphabet)
-HuffmanTree.assign_encodings()
-Leaves = {}
-for a in alphabet:
-    Leaves[a.symbol] = a.encoding
-    # print(f"Symbol: {a.symbol}\tEncoding: {a.encoding}")
