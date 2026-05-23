@@ -41,7 +41,7 @@ ALT_PROBABILITIES = list(PROBABILITIES)     # get a copy - so original isn't mod
 
 # swap probabilities
 ALT_PROBABILITIES[0], ALT_PROBABILITIES[5] = ALT_PROBABILITIES[5], ALT_PROBABILITIES[0]
-print(ALT_PROBABILITIES)
+# print(ALT_PROBABILITIES)
 alt_alphabet = []
 for i in range(len(SYMBOLS)):
     for j in range(len(SYMBOLS)):
